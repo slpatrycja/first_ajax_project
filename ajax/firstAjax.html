@@ -1,0 +1,43 @@
+<html>
+    <head>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+
+
+            var books_req = new XMLHttpRequest();
+            books_req.open('GET', 'http://localhost:5000/api/books/', true);
+            books_req.onreadystatechange = function() {
+                if (books_req.readyState == 4){
+                    if(books_req.status == 200){
+                        var authors_req = new XMLHttpRequest();
+                        authors_req.open('GET', 'http://localhost:5000/api/authors/', true);
+                        authors_req.onreadystatechange = function() {
+                        var authors =  JSON.parse(authors_req.responseText);
+                        console.log(authors);
+                        var response = JSON.parse(books_req.responseText);
+                        for(var i = 1; i <= response.length; i++){
+                           var book = response[i];
+                           for (var j = 1; j <= authors.length; j++){
+                            var author = authors[j];
+                            if (book.authorId == author.id)
+                                $('#books-table').append( '<tr><td>'+ i +'</td>'+ '<td>' + book.title+ '</td><td>' + author.firstName+'</td></tr>' );
+                           }
+                        }
+                    }
+                        // console.log(books_properties);
+
+
+                    }
+                }
+            }
+            books_req.send(null);
+        </script>
+    </head>
+
+    <body>
+        <table id='books-table'>
+            <th>Nr</th>
+            <th>Title</th>
+        </table>
+    </body>
+</html>
